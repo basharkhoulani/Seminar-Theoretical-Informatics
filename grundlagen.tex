@@ -1,0 +1,65 @@
+Für die Bewertung und Analyse von Algorithmen haben sich viele Defintionen und Sätze in der Algorithmik und Mathematik verankert.
+Um Strassens Algorithmus präzise zu bewerten, werden folgende Definitionen und Sätze aus der Vorlesung \textbf{Algorithmen und Datenstrukturen} zur Erfrischung wiederholt:
+\begin{env_definition}[Landau-Symbole\cite{books/daglib/0023376}]
+    Seien f(n) und g(n) Funktionen.
+    Dann werden folgende asymptotischen Schranken definiert:
+    \begin{itemize}
+        \item Obere Schranke:
+        \[
+            \mathcal{O}(g) = \{f\ |\,\exists\,c\,\in \mathbb{R}^{> 0}, n_0 \in \mathbb{N}^{> 0}\; \forall \,n \geq n_0: 0 \leq f(n) \leq c\,g(n)\}
+        \]
+        In anderen Worten: $\mathcal{O}(g)$ ist die Menge der Funktionen, die durch die Funktion g nach oben beschränkt sind.
+        \item Untere Schranke:
+        \[
+            \Omega(g) = \{f\ |\, \exists\,c\,\in \mathbb{R}^{> 0}, n_0 \in \mathbb{N}^{> 0}\; \forall n \geq n_0: 0 \leq c\,g(n) \leq f(n) \}
+        \]
+        Das bedeutet informell: $\Omega(g)$ ist die Menge der Funktionen, die durch die Funktion g nach unten beschränkt sind.
+        \item Scharfe Schranke:
+        \[
+            \Theta(g) = \{f\ |\, \exists\,c_1,\,c_2\,\in \mathbb{R}^{> 0}, n_0 \in \mathbb{N}^{> 0}\; \forall n \geq n_0: 0 \leq c_1\,g(n) \leq f(n) \leq c_2\,g(n)\}
+        \]
+        Das heißt: $\Theta(g)$ ist die Menge der Funktionen, die durch die Funktion g mit positiven Konstanten $c_1$ und $c_2$ eingeschlossen sind.
+        Es gilt außerdem:
+        \[
+            f \in \Theta(g) \iff f \in \Omega(g) \land f \in \mathcal{O}(g)
+        \]
+    \end{itemize}
+\end{env_definition}
+
+Mithilfe von Landau-Symbolen kann somit das asymptotische Verhalten von Funktionen bestimmt werden, das aus einem Algorithmus herausgeht.
+Dieses signalisiert die Zeitkomplexität dieses Algorithmus und liefert eine Möglichkeit, diesen Algorithmus gegenüber anderen Algorithmen, die dasselbe Problem lösen, zu bewerten.
+\newpage
+Teile-und-Herrsche (Divide-and-Conquer) ist ein Design-Prinzip in der Algorithmik.
+Algorithmen dieser Art verfolgen folgende Herangehensweise:
+\begin{itemize}
+    \item Löse kleine Instanzen unmittelbar
+    \item Löse große Instanzen $I$ auf folgende Art und Weise:
+    \begin{itemize}
+        \item Teile die Instanz $I$ auf kleinere Instanzen $I_{1}$, $\dots$, $I_{k}$ (Divide)
+        \item Löse die Instanzen $I_{1}$, $\dots$, $I_{k}$ (Conquer)
+        \item Kombiniere die Lösungen der Instanzen $I_{1}$, $\dots$, $I_{k}$ zu einer Lösung für $I$
+    \end{itemize}
+\end{itemize}
+Anhand der beschriebenen Herangehensweise ist ein rekursives Verfahren zu erkennen.
+Weniger erkennbar bei rekursiven Algorithmen sind ihre Laufzeiten.
+Somit werden üblicherweise ihre Rekurrenzgleichungen aufgestellt, die mittels des \textbf{Master-Theorems} meistens direkt ihre Laufzeiten liefern können.
+\begin{theorem}[Master-Theorem]
+    Seien $a \geq 1$ und $b > 1$ Konstanten.
+    Sei $ f: \mathbb{R}^{\geq 0} \rightarrow \mathbb{R}^{\geq 0}$ eine Funktion, und sei $T : \mathbb{N} \rightarrow \mathbb{N}$ durch die folgende Rekursion definiert:
+    \[
+        T(n) = a \cdot T \left(\frac{n}{b}\right) + f(n)
+    \]
+    Dann gilt:
+    \begin{enumerate}
+        \item Wenn $f(n) \in \mathcal{O}(n^{log_b\;a-\eps}) $ für ein $\eps$ $>$ $0$, dann gilt $T(n) \in \Theta(n^{log_b\;a})$.
+        \item Wenn $f(n) \in \Theta(n^{log_b\;a})$, dann gilt $T(n) \in \Theta(n^{log_b\;a}\;\lg\,n)$.
+        \item Wenn $f(n) \in \Omega(n^{log_b\;a+\eps}) $ für ein $\eps$ $>$ $0$ und $a\,f\left(\frac{n}{b}\right) \leq c\,f(n)$ für ein $c$ $<$ $1$ und hinreichend großen n, dann gilt $T(n) \in \Theta(f(n))$.
+    \end{enumerate}
+\end{theorem}
+\textbf{Beispiel} Sei die folgende Rekurrenzgleichung gegeben:
+\begin{equation}
+    T(n) =
+    8\; T\left(\frac{n}{2}\right) + f(n),\text{ mit }f(n) \in \Theta(n^{2})\label{eq:equation}
+\end{equation}
+Es gilt $a = 8$, $b = 2$ und $f(n) \in \Theta(n^{2})$ und somit $n^{log_b\;a} = n^{log_2\;8} = n^3$.
+Mit $\eps = 1$ gilt der erste Fall, also $f(n) \in \mathcal{O}(n^{3-\eps})$, und es folgt $T(n) \in \Theta(n^{log_b\;a}) = \Theta(n^{log_2\;8}) = \Theta(n^{3})$.

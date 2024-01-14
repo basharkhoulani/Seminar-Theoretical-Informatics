@@ -1,0 +1,84 @@
+\documentclass[11pt]{article}
+
+\usepackage[a4paper]{geometry}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{ngerman}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usepackage{csquotes}
+\usepackage{fancyhdr}
+\usepackage[T1]{fontenc}
+\usepackage {enumerate}
+\usepackage[utf8]{inputenc}
+\usepackage{indentfirst}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage{lipsum}
+\usepackage{amsmath}
+\pagestyle{fancy}
+\usetikzlibrary{automata}
+\numberwithin{equation}{section}
+\newtheorem{env_definition}{Definition}[section]
+\newtheorem {theorem} {Satz}
+\newtheorem{env_satz}{Satz}
+\newcommand {\eps} {\varepsilon}
+\algdef{SE}[SUBALG]{Indent}{EndIndent}{}{\algorithmicend\ }%
+\algtext*{Indent}
+\algtext*{EndIndent}
+
+\title{Strassens Algorithmus für Matrixmultiplikation \\[3 mm] \large Vortrag im Seminar \enquote{Algorithmen und Datenstrukturen} \\ am FG Theoretische Informatik / Formale Methoden \\ der Universit\"at Kassel}
+\author{Bashar Khoulani}
+\date{Wintersemester 2023/2024 \\ \phantom{a} \\ 08.02.2024}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Strassens Algorithmus ist ein rekursives Verfahren, das zwei Matrizen von der Ordnung $n \times n$ multipliziert und das Endergebnis liefert. 
+Der Algorithmus ist auf das Prinzip der Divide-And-Conquer-Technik gestützt und seine asymptotische Laufzeit ist $\Theta(n^{\lg7})$.
+
+Diese Seminararbeit befasst sich konkret mit dem Algorithmus von Strassen und liefert einen Vergleich zu den bekannten Verfahren für Matrixmultiplikation.
+Dabei wird auf die Fragestellung eingegangen, wann Strassens Algorithmus für Matrixmultiplikation für die Nutzung in der Praxis geeignet ist.
+\end{abstract}
+
+\section{Einführung}\label{sec:einfuhrung}
+
+Volker Strassen veröffentlichte seinen Algorithmus für Matrixmultiplikation in 1969\cite{Strassen1969}, der für eine große Aufmerksamkeit gesorgt hatte.
+Davor galt das herkömmliche, naive Verfahren als die Norm.
+Mit dem Algorithmus von Strassen wurde die Erkenntnis erworben, dass die Matrixmultiplikation in Hinsicht der asymptotischen Laufzeit subkubisch implementiert werden kann.
+Viele Forscher haben sich seitdem damit befasst, noch schnellere Algorithmen für die Matrixmultiplikation zu entwickeln. 
+
+Die Matrixmultiplikation übernimmt eine zentrale Rolle in zahlreichen Anwendungen,
+wie beispielsweise in \ldots 
+\begin{itemize}
+    \item der Graphentheorie,
+    \item der Booleschen Algebra,
+    \item und in wichtigen Aspekten der linearen Algebra\cite{1984}.
+\end{itemize}
+
+Bevor Strassens Algorithmus vorgestellt wird, müssen vorher wichtige Grundlagen erläutert werden.
+Dafür werden in Abschnitt~\ref{sec:abschn1} einige Themen aus dem Bereich der Algorithmen und Datenstrukturen erklärt und wiederholt.
+Darüber hinaus werden das naive Verfahren, die Divide-And-Conquer-Variante und Strassens Algorithmus für die Matrixmultiplikation in Abschnitt~\ref{sec:abschn2} dargestellt.
+Dazu werden die erwähnten Algorithmen in Hinsicht der asymptotischen Laufzeit analysiert und die Korrektheit von Strassens Algorithmus wird bewiesen.
+In Abschnitt~\ref{sec:abschn3} werden die Algorithmen mithilfe vorgegebener Matrizen bewertet, um die Grenze einzusehen, wann Strassens Algorithmus günstiger als die herkömmlichen Varianten ist.
+Zu guter Letzt werden die Ergebnisse in Abschnitt~\ref{sec:conclusion} zusammengefasst und es wird ein Ausblick in weiterführende Erkenntnisse bereitgestellt.
+ 
+\section{Grundlagen}
+\label{sec:abschn1}
+\input{grundlagen}
+
+\include{matrixmult}
+
+\section{Bewertung}
+\label{sec:abschn3}
+\include{bewertung}
+
+\section{Zusammenfassung und Ausblick}
+\label{sec:conclusion}
+\include{zusammenfassung}
+
+\newpage
+\bibliographystyle{plain}
+\bibliography{sem.bib}
+\end{document}

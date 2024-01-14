@@ -1,0 +1,107 @@
+\section{Matrixmultiplikation}
+\label{sec:abschn2}
+Die Matrixmultiplikation ist eine binäre Verknüpfung auf der Menge der Matrizen über den Ring $R$.
+Sie ist über die folgende Abbildung definiert: 
+\[
+\cdot: R^{l\times m} \times R^{m\times n} \rightarrow R^{l\times n}, (A, B) \mapsto C = A \cdot B
+\]
+Die Matrixmultiplikation ist assoziativ, aber nicht kommutativ. Es gilt also $(AB)C = A(BC)$ und $AB \neq BA$ für $A \neq B$.
+Die einzelnen Einträge der Matrix $C$ können wie folgt berechnet werden:
+\[
+c_{ij} = \sum_{k=1}^{m} a_{ik}b_{kj} \text{, für }i = 1, \dots, l \text{ und }j = 1, \dots, n
+\]
+Daraus kann die naive \enquote{Schulmethode} der Matrixmultiplikation abgeleitet werden. Sie ist dem Algorithmus \ref{alg:algorithm} zu entnehmen. 
+\begin{algorithm}[hbt!]
+\begin{algorithmic}[1]
+\caption{MATRIX-MULT - NAIV}
+\Procedure{MATRIX-MULT}{$A,B$}
+    \State $n\gets A.zeilen$
+    \State $C$ $sei$ $eine$ $neue$ $n\times n$-$Matrix$
+    \For{$i \gets 1$ $bis$ $n$}
+        \For{$j \gets 1$ $bis$ $n$}
+            \State $c_{ij} \gets 0$
+            \For{$k \gets 1$ $bis$ $n$}
+                \State {$c_{ij}$ $\gets$ {$c_{ij} + a_{ik} \cdot b_{kj}$}}
+            \EndFor
+        \EndFor
+    \EndFor
+    \State \textbf{return} $C$ 
+\EndProcedure
+\end{algorithmic}\label{alg:algorithm}
+\end{algorithm}
+
+\begin{algorithm}[hbt!]
+\begin{algorithmic}[1]
+\caption{MATRIX-MULT-DAC - DIVIDE-AND-CONQUER}
+\Procedure{MATRIX-MULT-DAC}{$A,B$}
+    \State $n\gets A.zeilen$
+    \If {$n$ $==$ $1$}
+        \State $c_{11}\gets a_{11}\cdot b_{11}$
+    \Else  
+        \State $Seien$ $A,$ $B$ $und$ $C$ $n\times n-Matrizen$ $mit$ $Gr\Ddot{o}{\textit{\text{\ss}}}enordnung$ $2^m$ $\times$ $2^m$
+        \State $A_{11}\gets A[1\dotsb n/2][1\dotsb n/2]$
+        \State $B_{11}\gets B[1\dotsb n/2][1\dotsb n/2]$
+        \State $A_{12}\gets A[1\dotsb n/2][n/2 + 1\dotsb n]$
+        \State $B_{12}\gets B[1\dotsb n/2][n/2 + 1\dotsb n]$
+        \State $A_{21}\gets A[n/2 + 1\dotsb n][1\dotsb n/2]$
+        \State $B_{21}\gets B[n/2 + 1\dotsb n][1\dotsb n/2]$
+        \State $A_{22}\gets A[n/2 + 1\dotsb n][n/2 + 1\dotsb n]$
+        \State $B_{22}\gets B[n/2 + 1\dotsb n][n/2 + 1\dotsb n]$
+        \State $C_{11}\gets \Call{MATRIX-MULT-DAC}{A_{11}, B_{11}}$ \newline
+        \hspace*{4.75em} $+$ $\Call{MATRIX-MULT-DAC}{A_{12}, B_{21}}$
+        \State $C_{12}\gets \Call{MATRIX-MULT-DAC}{A_{11}, B_{12}}$ \newline
+        \hspace*{4.75em} $+$ $\Call{MATRIX-MULT-DAC}{A_{12}, B_{22}}$ 
+        \State $C_{21}\gets \Call{MATRIX-MULT-DAC}{A_{21}, B_{11}}$ \newline
+        \hspace*{4.75em} $+$ $\Call{MATRIX-MULT-DAC}{A_{22}, B_{21}}$
+        \State $C_{22}\gets \Call{MATRIX-MULT-DAC}{A_{21}, B_{12}}$ \newline
+        \hspace*{4.75em} $+$ $\Call{MATRIX-MULT-DAC}{A_{22}, B_{22}}$
+    \EndIf
+    \State \textbf{return} $C$ 
+\EndProcedure
+\end{algorithmic}\label{alg:algorithm2}
+\end{algorithm}
+
+
+\begin{algorithm}[hbt!]
+\begin{algorithmic}[1]
+\caption{MATRIX-MULT-STRASSEN - STRASSEN}
+\Procedure{MATRIX-MULT-STRASSEN}{$A,B$}
+    \State $n\gets A.zeilen$
+    \If {$n$ $==$ $1$}
+        \State $c_{11}\gets a_{11}\cdot b_{11}$
+    \Else  
+        \State $Seien$ $A,$ $B$ $und$ $C$ $n\times n-Matrizen$ $mit$ $Gr\Ddot{o}{\textit{\text{\ss}}}enordnung$ $2^m$ $\times$ $2^m$
+        \State $A_{11}\gets A[1\dotsb n/2][1\dotsb n/2]$
+        \State $B_{11}\gets B[1\dotsb n/2][1\dotsb n/2]$
+        \State $A_{12}\gets A[1\dotsb n/2][n/2 + 1\dotsb n]$
+        \State $B_{12}\gets B[1\dotsb n/2][n/2 + 1\dotsb n]$
+        \State $A_{21}\gets A[n/2 + 1\dotsb n][1\dotsb n/2]$
+        \State $B_{21}\gets B[n/2 + 1\dotsb n][1\dotsb n/2]$
+        \State $A_{22}\gets A[n/2 + 1\dotsb n][n/2 + 1\dotsb n]$
+        \State $B_{22}\gets B[n/2 + 1\dotsb n][n/2 + 1\dotsb n]$
+        \State $S_{1}\gets A_{11} + A_{12}$
+        \State $S_{2}\gets A_{11} + A_{22}$
+        \State $S_{3}\gets A_{21} + A_{22}$
+        \State $S_{4}\gets A_{11} - A_{21}$
+        \State $S_{5}\gets A_{12} - A_{22}$
+        \State $S_{6}\gets B_{11} + B_{12}$
+        \State $S_{7}\gets B_{11} + B_{22}$
+        \State $S_{8}\gets B_{21} + B_{22}$
+        \State $S_{9}\gets B_{12} - B_{22}$
+        \State $S_{10}\gets B_{21} - B_{11}$
+        \State $P_1\gets \Call{MATRIX-MULT-STRASSEN}{A_{11}, S_{9}}$
+        \State $P_2\gets \Call{MATRIX-MULT-STRASSEN}{S_{1}, B_{22}}$
+        \State $P_3\gets \Call{MATRIX-MULT-STRASSEN}{S_{3}, B_{11}}$
+        \State $P_4\gets \Call{MATRIX-MULT-STRASSEN}{A_{22}, S_{10}}$
+        \State $P_5\gets \Call{MATRIX-MULT-STRASSEN}{S_{2}, S_{7}}$
+        \State $P_6\gets \Call{MATRIX-MULT-STRASSEN}{S_{5}, S_{8}}$
+        \State $P_7\gets \Call{MATRIX-MULT-STRASSEN}{S_{4}, S_{6}}$
+        \State $C[1\dotsb n/2][1\dotsb n/2]\gets P_{4} + P_{5} + P_{6} - P_{2}$
+        \State $C[1\dotsb n/2][n/2 + 1\dotsb n]\gets P_{1} + P_{2}$
+        \State $C[n/2 + 1\dotsb n][1\dotsb n/2]\gets P_{3} + P_{4}$
+        \State $C[n/2 + 1\dotsb n][n/2 + 1\dotsb n]\gets P_{1} + P_{5} - P_{3} - P_{7}$
+    \EndIf
+    \State \textbf{return} $C$ 
+\EndProcedure
+\end{algorithmic}\label{alg:algorithm3}
+\end{algorithm}
