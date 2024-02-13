@@ -1,22 +1,25 @@
 \section{Matrixmultiplikation}
 \label{sec:abschn2}
-Die Matrixmultiplikation ist eine binäre Verknüpfung auf der Menge der Matrizen über den Ring $R$.
+Die Matrixmultiplikation ist eine binäre Verknüpfung auf der Menge der Matrizen über den Ring $R$. Sie ist assoziativ, aber nicht kommutativ. Es gilt also $(AB)C = A(BC)$ und $AB \neq BA$ für $A \neq B$ \cite{Fischer2014}.
 Sie ist über die folgende Abbildung definiert: 
 \[
-\cdot: R^{l\times m} \times R^{m\times n} \rightarrow R^{l\times n}, (A, B) \mapsto C = A \cdot B
+\cdot: R^{n\times l} \times R^{l\times m} \rightarrow R^{n\times m}, (A, B) \mapsto C = A \cdot B
 \]
-Die Matrixmultiplikation ist assoziativ, aber nicht kommutativ. Es gilt also $(AB)C = A(BC)$ und $AB \neq BA$ für $A \neq B$.
-Die einzelnen Einträge der Matrix $C$ können wie folgt berechnet werden:
 \[
-c_{ij} = \sum_{k=1}^{m} a_{ik}b_{kj} \text{, für }i = 1, \dots, l \text{ und }j = 1, \dots, n
+c_{ij} = \sum_{k=1}^{l} a_{ik}b_{kj} \text{, für }i = 1, \dots, n \text{ und }j = 1, \dots, m
 \]
-Daraus kann die naive \enquote{Schulmethode} der Matrixmultiplikation abgeleitet werden. Sie ist dem Algorithmus \ref{alg:algorithm} zu entnehmen. 
+
+Die einzelnen Einträge der Matrix $C$ können mithilfe der obigen Summenformel bestimmt werden. Im Folgenden wird angenommen, dass die Matrizen immer in quadratischer Form gegeben sind. Nach Definition der Matrixmultiplikation folgt dann, dass die Matrizen der gleichen Ordnung sind. 
+\subsection{Naives Verfahren für die Matrixmultiplikation}
+Der Algorithmus \ref{naiv} gibt das \enquote{naive} Verfahren an, das aus der Matrixmultiplikation hergeleitet werden kann. Angenommen haben die Matrizen das Attribut $zeilen$, welches die Anzahl der Zeilen der Matrix angibt, dann stellen wir fest:
+Angenommen sind die Matrizen quadratisch, dann berechnet die erste \textbf{for}-Schleife die Einträge von der Matrixzeile $i$ und mit der Matrixzeile $i$ berechnet die zweite \textbf{for}-Schleife in der Spalte $j$ den Eintrag $c_{ij}$. Dabei wird die vorige Summenformel verwendet, um den Eintrag zu bestimmen. Die innerste \textbf{for}-Schleife entspricht also der Summenformel. Daraus erschließt sich wegen der Form der \textbf{for}-Schleifen, mit jeweils $n$ Iterationen, eine Laufzeit von $\Theta(n^3)$, wobei n für die Anzahl der Zeilen steht. 
 \begin{algorithm}[hbt!]
 \begin{algorithmic}[1]
 \caption{MATRIX-MULT - NAIV}
+\label{naiv}
 \Procedure{MATRIX-MULT}{$A,B$}
     \State $n\gets A.zeilen$
-    \State $C$ $sei$ $eine$ $neue$ $n\times n$-$Matrix$
+    \State $C$ sei eine neue $n\times n$-Matrix
     \For{$i \gets 1$ $bis$ $n$}
         \For{$j \gets 1$ $bis$ $n$}
             \State $c_{ij} \gets 0$
@@ -27,58 +30,169 @@ Daraus kann die naive \enquote{Schulmethode} der Matrixmultiplikation abgeleitet
     \EndFor
     \State \textbf{return} $C$ 
 \EndProcedure
-\end{algorithmic}\label{alg:algorithm}
+\end{algorithmic}
 \end{algorithm}
+
+\subsection{Divide-And-Conquer Verfahren}
+
+Neben dem \enquote{naiven} Verfahren kann ein rekursives Verfahren aufgestellt werden, das die Divide-And-Conquer Technik benutzt. Dabei wird angenommen, dass die Matrizen quadratisch sind und eine Größenordnung von einer Zweierpotenz haben. Dies ist nötig, um die Matrizen (große Instanzen) in jedem rekursiven Aufruf in Teilmatrizen (kleine Instanzen) von der Dimension der Zeilen bzw. Spalten zu halbieren. 
+
+Der Algorithmus \ref{dac} gibt das Divide-And-Conquer Verfahren an. Beim Basisfall auf unterster Ebene mit $n = 1$ ist eine Skalarmultiplikation durchzuführen. Sonst werden die Matrizen in vier Teilmatrizen aufgeteilt. Dann werden die Teilmatrizen auf analoge Weise wie beim \enquote{naiven} Verfahren als Elemente betrachtet, um die Matrixmultiplikation durchzuführen. Dies passiert von Zeile 19 bis Zeile 22. Nach Abschluss aller rekursiven Aufrufe und dem Zusammenführen der Teilmatrizen wird das Produkt in Zeile 23 zurückgegeben.
 
 \begin{algorithm}[hbt!]
 \begin{algorithmic}[1]
 \caption{MATRIX-MULT-DAC - DIVIDE-AND-CONQUER}
+\label{dac}
 \Procedure{MATRIX-MULT-DAC}{$A,B$}
     \State $n\gets A.zeilen$
     \If {$n$ $==$ $1$}
         \State $c_{11}\gets a_{11}\cdot b_{11}$
     \Else  
-        \State $Seien$ $A,$ $B$ $und$ $C$ $n\times n-Matrizen$ $mit$ $Gr\Ddot{o}{\textit{\text{\ss}}}enordnung$ $2^m$ $\times$ $2^m$
+        \State Seien $A$, $B$ und $C$ $n \times n$-Matrizen
         \State $A_{11}\gets A[1\dotsb n/2][1\dotsb n/2]$
         \State $B_{11}\gets B[1\dotsb n/2][1\dotsb n/2]$
+        \State $C_{11}\gets C[1\dotsb n/2][1\dotsb n/2]$
         \State $A_{12}\gets A[1\dotsb n/2][n/2 + 1\dotsb n]$
         \State $B_{12}\gets B[1\dotsb n/2][n/2 + 1\dotsb n]$
+        \State $C_{12}\gets C[1\dotsb n/2][n/2 + 1\dotsb n]$
         \State $A_{21}\gets A[n/2 + 1\dotsb n][1\dotsb n/2]$
         \State $B_{21}\gets B[n/2 + 1\dotsb n][1\dotsb n/2]$
+        \State $C_{21}\gets C[n/2 + 1\dotsb n][1\dotsb n/2]$
         \State $A_{22}\gets A[n/2 + 1\dotsb n][n/2 + 1\dotsb n]$
         \State $B_{22}\gets B[n/2 + 1\dotsb n][n/2 + 1\dotsb n]$
+        \State $C_{22}\gets C[n/2 + 1\dotsb n][n/2 + 1\dotsb n]$
         \State $C_{11}\gets \Call{MATRIX-MULT-DAC}{A_{11}, B_{11}}$ \newline
-        \hspace*{4.75em} $+$ $\Call{MATRIX-MULT-DAC}{A_{12}, B_{21}}$
+        \hspace*{4.65em} $+$ $\Call{MATRIX-MULT-DAC}{A_{12}, B_{21}}$
         \State $C_{12}\gets \Call{MATRIX-MULT-DAC}{A_{11}, B_{12}}$ \newline
-        \hspace*{4.75em} $+$ $\Call{MATRIX-MULT-DAC}{A_{12}, B_{22}}$ 
+        \hspace*{4.65em} $+$ $\Call{MATRIX-MULT-DAC}{A_{12}, B_{22}}$ 
         \State $C_{21}\gets \Call{MATRIX-MULT-DAC}{A_{21}, B_{11}}$ \newline
-        \hspace*{4.75em} $+$ $\Call{MATRIX-MULT-DAC}{A_{22}, B_{21}}$
+        \hspace*{4.65em} $+$ $\Call{MATRIX-MULT-DAC}{A_{22}, B_{21}}$
         \State $C_{22}\gets \Call{MATRIX-MULT-DAC}{A_{21}, B_{12}}$ \newline
-        \hspace*{4.75em} $+$ $\Call{MATRIX-MULT-DAC}{A_{22}, B_{22}}$
+        \hspace*{4.65em} $+$ $\Call{MATRIX-MULT-DAC}{A_{22}, B_{22}}$
     \EndIf
     \State \textbf{return} $C$ 
 \EndProcedure
-\end{algorithmic}\label{alg:algorithm2}
+\end{algorithmic}
 \end{algorithm}
 
+Um den Algorithmus auf seine Laufzeit zu analysieren, wird die Rekurrenzgleichung aufgestellt. Dazu zählen wir die rekursiven Aufrufe -- im Algorithmus \ref{dac} sind das acht -- und extrahieren den Reduzierungsfaktor von der Eingabe -- im Algorithmus \ref{dac} ist der Faktor $2$. Die zusätzlichen Kosten enstehen durch die Matrixaddition, die in $\Theta(n^2)$ läuft. Die Partitionierung der Matrizen erfolgt konstant, da hier Indexberechnungen durchgeführt werden. Somit erhalten wir die Gleichung für $n > 1$, die in \ref{eq:equation} angegeben ist. Nach dem Anwenden des Master-Theorems stellen wir fest, dass der Divide-And-Conquer Algorithmus in derselben Laufzeitklasse wie das \enquote{naive} Verfahren liegt.
 
+\subsection{Strassens Algorithmus}
+Strassens rekursiver Algorithmus is keineswegs einleuchtend. Der Grundgedanke war es, die Anzahl der Matrixmultiplikationen zu reduzieren, um den Faktor $a$ -- die Anzahl der rekursiven Aufrufe innerhalb eines rekursiven Algorithmus -- bei der Anwendung des Master-Theorems zu verringern. 
+
+Der Algorithmus beruht auf eine Intuition, die mittels der folgenden Gleichungen veranschaulicht werden kann. Seien $x$, $y$ $\in \mathbb{R}$, dann gilt: $x^2 - y^2 \stackrel{1}{=} x \cdot x - y \cdot y \stackrel{2}{=} (x + y)(x - y)$. Die Gleichheit gilt bei Gleichung 1 soweiso, dabei ist die Anzahl der Multiplikationen und Additionen bzw. Subtraktionen gleich. Die Gleichheit gilt bei Gleichung 2 nach der dritten binomischen Formel. Somit sind aus zwei Produkten und einer Addition ein Produkt, eine Addition und eine Subtraktion entstanden. 
+
+Angenommen sind die Matrizen quadratisch und haben eine Größenordnung von einer Zweierpotenz haben, dann berechnet das Verfahren \ref{strassen} die Matrixmultiplikation von $A$ und $B$ (Korrektheitsbeweis später). Im Ausblick wird der Fall für allgemeine Matrizen behandelt. Bei dem Algorithmus wird wieder auf unterster Ebene ($n = 1$) eine Skalarmultiplikation durchgeführt. Sonst werden die Matrizen in vier Teilmatrizen aufgeteilt. Dann greift in den Zeilen 19-39 der Kernpunkt von Strassens Algorithmus ein. Dabei werden folgende Produkte berechnet und die Matrix $C$ gesetzt:
+\begin{align*} 
+        P_{1} = A_{11} \cdot \left(B_{12} - B_{22}\right) \; \; \; \; & P_{2} = B_{22} \cdot \left(A_{11} + A_{12}\right) \\
+        P_{3} = B_{11} \cdot \left(A_{21} + A_{22}\right) \; \; \; \; & P_{4} = A_{22} \cdot \left(B_{21} - B_{11}\right) \\
+        P_{5} = \left(B_{11} + B_{22}\right) \cdot \left(A_{11} + A_{22}\right) \; \; \; \; & P_{6} = \left(B_{21} + B_{22}\right) \cdot \left(A_{12} - A_{22}\right) \\
+        P_{7} = \left(A_{11} - A_{21}\right) \cdot \left(B_{11} + B_{12}\right) \; \; \; \; &
+\end{align*}
+\begin{equation}\label{eqstrassem}
+    C =\left(\begin{array}{cc}
+                P_{4} + P_{5} + P_{6} - P_{2} & P_{1} + P_{2} \\
+                P_{3} + P_{4} & P_{1} + P_{5} - P_{3} - P_{7} 
+            \end{array}\right)
+\end{equation}
+
+Wir haben also die acht Produkte von der Divide-And-Conquer-Variante auf sieben Produkte reduziert. Dennoch haben wir aber nun 18 Additionen und Subtraktionen, anstatt von vier. 
+
+Wir führen den Korrektheitsbeweis folgendermaßen durch: Die einzelnen Einträge der Matrix $C$ werden auf die Gleichungen aus dem Divide-And-Conquer Algorithmus \ref{dac} zusammengefasst. Somit wird eine Äquivalenz zwischen Strassens Algorithmus und dem Divide-And-Conquer Algorithmus hergestellt. Die Äquivalenz zwischen dem Divide-And-Conquer Algorithmus und dem \enquote{naiven} Verfahren besteht auf intuitive Weise bereits. Auf diese Art und Weise erhalten wir eine Äquivalenz zwischen den drei Algorithmen. O. B. d. A. werden die Matrixdimensionen als Zweierpotenzen vorausgesetzt. Es liegt nun folgende Behauptung vor:
+
+\begin{prop}
+    $A \cdot B = C$
+\end{prop}
+
+\begin{bew}
+    Seien $A$, $B$ und $C$ $\in R^{n \times n}$, wobei $n \geq 2$ eine Zweierpotenz ist. Wir teilen die Matrizen in vier Blöcke auf, wie in Algorithmus \ref{strassen} in Zeile 7-18. Dann gilt gemäß \ref{eqstrassem}:
+    \begin{equation*}
+        \begin{multlined}
+            C_{11} = P_{4} + P_{5} + P_{6} - P_{2} = \\
+            \arraycolsep=1.4pt
+            \begin{array}{ccccccc}
+                A_{11} \cdot B_{11} & + A_{11} \cdot B_{22} & + A_{22} \cdot B_{11} & + A_{22} \cdot B_{22} &&& \\
+                && - A_{22} \cdot B_{11} && + A_{22} \cdot B_{21}&& \\
+                & - A_{11} \cdot B_{22} &&&& - A_{12} \cdot B_{22}& \\
+                &&& - A_{22} \cdot B_{22} & - A_{22} \cdot B_{21} & + A_{12} \cdot B_{22} & + A_{12} \cdot B_{21} \\
+            \end{array} \\
+            = A_{11} \cdot B_{11} + A_{12} \cdot B_{21}
+        \end{multlined}
+    \end{equation*}
+    Somit erhalten wir die Gleichung von $C_{11}$ aus dem Algorithmus \ref{dac}.
+    
+    \begin{equation*}
+        \begin{multlined}
+            C_{12} = P_{1} + P_{2} = \\
+            \arraycolsep=1.4pt
+            \begin{array}{ccc}
+                A_{11} \cdot B_{12} & - A_{11} \cdot B_{22} &\\
+                & + A_{11} \cdot B_{22} & + A_{12} \cdot B_{22} \\
+            \end{array} \\
+            = A_{11} \cdot B_{12} + A_{12} \cdot B_{22}
+        \end{multlined}
+    \end{equation*}
+    Dies entspricht der Gleichung von $C_{12}$ aus dem Algorithmus \ref{dac}.
+    
+    \begin{equation*}
+        \begin{multlined}
+            C_{21} = P_{3} + P_{4} = \\
+            \arraycolsep=1.4pt
+            \begin{array}{ccc}
+                A_{21} \cdot B_{11} & + A_{22} \cdot B_{11} &  \\
+                & - A_{22} \cdot B_{11} & + A_{22} \cdot B_{21} \\
+            \end{array} \\
+            = A_{21} \cdot B_{11} + A_{22} \cdot B_{21}
+        \end{multlined}
+    \end{equation*}
+    Es folgt, dass dies der Gleichung von $C_{21}$ aus dem Algorithmus \ref{dac} entspricht.
+    
+    \begin{equation*}
+        \begin{multlined}
+            C_{22} = P_{1} + P_{5} - P_{3} - P_{7} = \\
+            \arraycolsep=1.4pt
+            \begin{array}{ccccccc}
+                A_{11} \cdot B_{11} & + A_{11} \cdot B_{22} & + A_{22} \cdot B_{11} & + A_{22} \cdot B_{22} &&& \\
+                & - A_{11} \cdot B_{22} &&& + A_{11} \cdot B_{12}&& \\
+                && - A_{22} \cdot B_{11} &&& - A_{21} \cdot B_{11}& \\
+                - A_{11} \cdot B_{11} &&&& - A_{11} \cdot B_{12} & + A_{21} \cdot B_{11} & + A_{21} \cdot B_{12} \\
+            \end{array} \\
+            = A_{21} \cdot B_{12} + A_{22} \cdot B_{22}
+        \end{multlined}
+    \end{equation*}
+    Somit erhalten wir die Gleichung von $C_{22}$ aus dem Algorithmus \ref{dac}. Insgesamt erhalten wir dieselben Gleichungen aus dem Divide-And-Conquer Algorithmus \ref{dac} für das Produkt $A \cdot B$. Somit gilt $A \cdot B = C$ und wir erhalten die Äquivalenz zwischen allen drei Algorithmen. \qed
+\end{bew}
+
+Wir können aus dem Algorithmus \ref{strassen} die folgende Rekurrenzgleichung aufstellen: 
+\[ T(n) =  \begin{cases*}
+                    \Theta(1) & \text{n $\leq$ 1,} \\
+                    7 \cdot T\left(\frac{n}{2}\right) + \Theta(n^2) & \text{n > 1} 
+                \end{cases*}
+\]
+Wir wenden nun das Master-Theorem an: Wir setzen $a = 7$, $b = 2$ und $f(n) \in \Theta(n^{2})$ und somit gilt $n^{log_b\;a} = n^{log_2\;7}$.
+Mit $\eps = 0,8$ ($2,80 < lg\;7 < 2,81$) gilt der erste Fall, also $f(n) \in \mathcal{O}(n^{3-\eps})$, und es folgt $T(n) \in \Theta(n^{log_b\;a}) = \Theta(n^{log_2\;7}) = \Theta(n^{lg\;7})$. Somit haben wir bzgl. der asymptotischen Analyse eine Verbesserung von $\Theta(n^{3})$ auf $\Theta(n^{lg\;7})$.
 \begin{algorithm}[hbt!]
 \begin{algorithmic}[1]
 \caption{MATRIX-MULT-STRASSEN - STRASSEN}
+\label{strassen}
 \Procedure{MATRIX-MULT-STRASSEN}{$A,B$}
     \State $n\gets A.zeilen$
     \If {$n$ $==$ $1$}
         \State $c_{11}\gets a_{11}\cdot b_{11}$
     \Else  
-        \State $Seien$ $A,$ $B$ $und$ $C$ $n\times n-Matrizen$ $mit$ $Gr\Ddot{o}{\textit{\text{\ss}}}enordnung$ $2^m$ $\times$ $2^m$
+        \State Seien $A$, $B$ und $C$ $n \times n$-Matrizen
         \State $A_{11}\gets A[1\dotsb n/2][1\dotsb n/2]$
         \State $B_{11}\gets B[1\dotsb n/2][1\dotsb n/2]$
+        \State $C_{11}\gets C[1\dotsb n/2][1\dotsb n/2]$
         \State $A_{12}\gets A[1\dotsb n/2][n/2 + 1\dotsb n]$
         \State $B_{12}\gets B[1\dotsb n/2][n/2 + 1\dotsb n]$
+        \State $C_{12}\gets C[1\dotsb n/2][n/2 + 1\dotsb n]$
         \State $A_{21}\gets A[n/2 + 1\dotsb n][1\dotsb n/2]$
         \State $B_{21}\gets B[n/2 + 1\dotsb n][1\dotsb n/2]$
+        \State $C_{21}\gets C[n/2 + 1\dotsb n][1\dotsb n/2]$
         \State $A_{22}\gets A[n/2 + 1\dotsb n][n/2 + 1\dotsb n]$
         \State $B_{22}\gets B[n/2 + 1\dotsb n][n/2 + 1\dotsb n]$
+        \State $C_{22}\gets C[n/2 + 1\dotsb n][n/2 + 1\dotsb n]$
         \State $S_{1}\gets A_{11} + A_{12}$
         \State $S_{2}\gets A_{11} + A_{22}$
         \State $S_{3}\gets A_{21} + A_{22}$
@@ -89,19 +203,19 @@ Daraus kann die naive \enquote{Schulmethode} der Matrixmultiplikation abgeleitet
         \State $S_{8}\gets B_{21} + B_{22}$
         \State $S_{9}\gets B_{12} - B_{22}$
         \State $S_{10}\gets B_{21} - B_{11}$
-        \State $P_1\gets \Call{MATRIX-MULT-STRASSEN}{A_{11}, S_{9}}$
+        \State $P_1\gets \Call{MATRIX-MULT-STRASSEN}{A_{11}, S_{9}}$ 
         \State $P_2\gets \Call{MATRIX-MULT-STRASSEN}{S_{1}, B_{22}}$
         \State $P_3\gets \Call{MATRIX-MULT-STRASSEN}{S_{3}, B_{11}}$
         \State $P_4\gets \Call{MATRIX-MULT-STRASSEN}{A_{22}, S_{10}}$
         \State $P_5\gets \Call{MATRIX-MULT-STRASSEN}{S_{2}, S_{7}}$
         \State $P_6\gets \Call{MATRIX-MULT-STRASSEN}{S_{5}, S_{8}}$
         \State $P_7\gets \Call{MATRIX-MULT-STRASSEN}{S_{4}, S_{6}}$
-        \State $C[1\dotsb n/2][1\dotsb n/2]\gets P_{4} + P_{5} + P_{6} - P_{2}$
-        \State $C[1\dotsb n/2][n/2 + 1\dotsb n]\gets P_{1} + P_{2}$
-        \State $C[n/2 + 1\dotsb n][1\dotsb n/2]\gets P_{3} + P_{4}$
-        \State $C[n/2 + 1\dotsb n][n/2 + 1\dotsb n]\gets P_{1} + P_{5} - P_{3} - P_{7}$
+        \State $C_{11}\gets P_{4} + P_{5} + P_{6} - P_{2}$
+        \State $C_{12}\gets P_{1} + P_{2}$
+        \State $C_{21}\gets P_{3} + P_{4}$
+        \State $C_{22}\gets P_{1} + P_{5} - P_{3} - P_{7}$
     \EndIf
     \State \textbf{return} $C$ 
 \EndProcedure
-\end{algorithmic}\label{alg:algorithm3}
+\end{algorithmic}
 \end{algorithm}

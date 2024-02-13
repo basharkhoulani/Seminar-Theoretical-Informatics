@@ -1,0 +1,10 @@
+\section{Ausblick und Zusammenfassung}
+\label{sec:conclusion}
+
+Es wurde festgestellt, dass Strassens Algorithmus in einer besseren asymptotischen Laufzeitklasse als der \enquote{naive} Algorithmus und der Divide-And-Conquer Algorithmus liegt. In der Praxis wird der Algorithmus jedoch leicht modifizert, also der Basisfall wird geändert, um den hohen Aufwand bei der Verwaltung des Rekursionsstack zu vermeiden. Strassens Algorithmus kann auch parallelisiert werden. Dabei werden die sieben Produkte aus Algorithmus \ref{strassen} gleichzeitig berechnet, was den Algorithmus verschnellert.
+
+Um Strassens Algorithmus auf beliebige Matrixgrößen anwenden zu können, muss auch der Algorithmus modifizert werden. Dabei muss vor Anwendung des Algorithmus geprüft werden, ob die Eingabematrizen eine Zweierpotenz Größenordnung haben. Falls ja, dann wird der Algorithmus standardmäßig durchgeführt. Sonst werden die Matrizen auf eine Zweierpotenz Größenordnung vergrößert, indem zusätzliche, mit Null befüllte Spalten und Zeilen zu den Eingabematrizen hinzugefügt werden, bis sie eine Zweierpotenz Form haben. Bei dem Endprodukt werden dann die hinzugefügten Spalten und Zeilen entfernt.
+
+Es existiert aktuell ein besserer Algorithmus hinsichtlich der asymptotischen Laufzeit als Strassens Algorithmus, nämlich der Coppersmith-Winograd Algorithmus, der in $\mathcal{O}(n^{2,376})$ läuft \cite{books/daglib/0023376}. Dieser Algorithmus ist dennoch in der Praxis eher unpraktisch und nur für Matrizen mit sehr hohen Größenordnungen gedacht. Jedoch ist er für die Theorie von bedeutsamer Wichtigkeit, um die theoretischen Grenzen der Zeitkomplexität der Matrixmultiplikation zu definieren.
+
+Zu guter Letzt ist auch erwähnenswert, dass ein rekursiver Algorithmus für die Matrixmultiplikation von Matrizen mit einer Zweierpotenz Größenordnung mit weniger als sieben Produkte nicht existiert \cite{https://doi.org/10.48550/arxiv.math/0407224}. Somit ist Strassens Algorithmus der beste in dieser Hinsicht.
