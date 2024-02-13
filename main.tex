@@ -16,30 +16,38 @@
 \usepackage[noend]{algpseudocode}
 \usepackage{lipsum}
 \usepackage{amsmath}
+\usepackage{mathtools}
 \pagestyle{fancy}
 \usetikzlibrary{automata}
 \numberwithin{equation}{section}
-\newtheorem{env_definition}{Definition}[section]
-\newtheorem {theorem} {Satz}
-\newtheorem{env_satz}{Satz}
+\theoremstyle{definition}
+\newtheorem*{env_definition}{Definition}
+\theoremstyle{definition}
+\newtheorem*{theorem} {Theorem}
+\theoremstyle{definition}
+\newtheorem*{env_satz}{Satz}
+\theoremstyle{definition}
+\newtheorem*{prop}{Behauptung}
+\theoremstyle{definition}
+\newtheorem*{bew}{Beweis}
 \newcommand {\eps} {\varepsilon}
 \algdef{SE}[SUBALG]{Indent}{EndIndent}{}{\algorithmicend\ }%
 \algtext*{Indent}
 \algtext*{EndIndent}
 
-\title{Strassens Algorithmus für Matrixmultiplikation \\[3 mm] \large Vortrag im Seminar \enquote{Algorithmen und Datenstrukturen} \\ am FG Theoretische Informatik / Formale Methoden \\ der Universit\"at Kassel}
+\title{Strassens Algorithmus für Matrixmultiplikation \\[3 mm] \large Ausarbeitung im Seminar \enquote{Algorithmen und Datenstrukturen} \\ am FG Theoretische Informatik / Formale Methoden \\ der Universit\"at Kassel}
 \author{Bashar Khoulani}
-\date{Wintersemester 2023/2024 \\ \phantom{a} \\ 08.02.2024}
+\date{Wintersemester 2023/2024 \\ \phantom{a} \\ 13.02.2024}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-Strassens Algorithmus ist ein rekursives Verfahren, das zwei Matrizen von der Ordnung $n \times n$ multipliziert und das Endergebnis liefert. 
+Strassens Algorithmus ist ein rekursives Verfahren, das zwei Matrizen von der Ordnung $n \times n$ multipliziert und das Endergebnis liefert, wobei n $n \geq 1$ eine Zweierpotenz ist. 
 Der Algorithmus ist auf das Prinzip der Divide-And-Conquer-Technik gestützt und seine asymptotische Laufzeit ist $\Theta(n^{\lg7})$.
 
 Diese Seminararbeit befasst sich konkret mit dem Algorithmus von Strassen und liefert einen Vergleich zu den bekannten Verfahren für Matrixmultiplikation.
-Dabei wird auf die Fragestellung eingegangen, wann Strassens Algorithmus für Matrixmultiplikation für die Nutzung in der Praxis geeignet ist.
+Dabei wird auf die Fragestellung eingegangen, wie Strassens Algorithmus für Matrixmultiplikation für die Nutzung in der Praxis geeignet ist.
 \end{abstract}
 
 \section{Einführung}\label{sec:einfuhrung}
@@ -52,8 +60,8 @@ Viele Forscher haben sich seitdem damit befasst, noch schnellere Algorithmen fü
 Die Matrixmultiplikation übernimmt eine zentrale Rolle in zahlreichen Anwendungen,
 wie beispielsweise in \ldots 
 \begin{itemize}
-    \item der Graphentheorie,
-    \item der Booleschen Algebra,
+    \item der Graphentheorie \cite{4569672},
+    \item der Booleschen Algebra\cite{4569672, 1984},
     \item und in wichtigen Aspekten der linearen Algebra\cite{1984}.
 \end{itemize}
 
@@ -69,13 +77,7 @@ Zu guter Letzt werden die Ergebnisse in Abschnitt~\ref{sec:conclusion} zusammeng
 \input{grundlagen}
 
 \include{matrixmult}
-
-\section{Bewertung}
-\label{sec:abschn3}
 \include{bewertung}
-
-\section{Zusammenfassung und Ausblick}
-\label{sec:conclusion}
 \include{zusammenfassung}
 
 \newpage
